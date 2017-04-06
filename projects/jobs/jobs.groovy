@@ -90,6 +90,7 @@ return cartridge_urls;
           editable(true)
           description('Cartridge URL to load')
         }
+        stringParam('CARTRIDGE_VERSION', 'master', 'The version of the cartridge to load - this can be anything commitish.')
         activeChoiceParam('SCM_PROVIDER') {
           description('Your chosen SCM Provider and the appropriate cloning protocol')
           filterable()
@@ -229,6 +230,12 @@ else
     git clone ${CARTRIDGE_CLONE_URL} cartridge
 fi
 set -x
+
+# Use the requested cartridge version
+if [ ! -z "${CARTRIDGE_VERSION}" ]; then
+	echo "INFO: Using CARTRIDGE_VERSION of '${CARTRIDGE_VERSION}'"
+    git checkout "${CARTRIDGE_VERSION}"
+fi
 
 # Find the cartridge
 export CART_HOME=$(dirname $(find -name metadata.cartridge | head -1))
