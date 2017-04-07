@@ -479,7 +479,13 @@ loadCartridgeCollectionJob.with{
         println("Loading cartridge inside folder: " + cartridge.folder)
         println("Cartridge URL: " + cartridge.url)
 
-        build job: projectWorkspace+'/Cartridge_Management/Load_Cartridge', parameters: [[$class: 'StringParameterValue', name: 'CARTRIDGE_FOLDER', value: cartridge.folder], [$class: 'StringParameterValue', name: 'FOLDER_DISPLAY_NAME', value: cartridge.display_name], [$class: 'StringParameterValue', name: 'FOLDER_DESCRIPTION', value: cartridge.desc], [$class: 'StringParameterValue', name: 'CARTRIDGE_CLONE_URL', value: cartridge.url]]
+        build job: projectWorkspace+'/Cartridge_Management/Load_Cartridge', parameters: [
+          [$class: 'StringParameterValue', name: 'CARTRIDGE_FOLDER', value: cartridge.folder],
+          [$class: 'StringParameterValue', name: 'FOLDER_DISPLAY_NAME', value: cartridge.display_name],
+          [$class: 'StringParameterValue', name: 'FOLDER_DESCRIPTION', value: cartridge.desc],
+          [$class: 'StringParameterValue', name: 'CARTRIDGE_CLONE_URL', value: cartridge.url],
+          [$class: 'StringParameterValue', name: 'CARTRIDGE_VERSION', value: cartridge.version]
+        ]
     }
 
 }
