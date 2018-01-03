@@ -104,6 +104,7 @@ return cartridge_urls;
         stringParam('FOLDER_DESCRIPTION', '', 'Description of the folder where the cartridge is loaded.')
         booleanParam('ENABLE_CODE_REVIEW', false, 'Enables Code Reviewing for the selected cartridge')
         booleanParam('OVERWRITE_REPOS', false, 'If ticked, existing code repositories (previously loaded by the cartridge) will be overwritten. For first time cartridge runs, this property is redundant and will perform the same behavior regardless.')
+        textParam('CARTRIDGE_CUSTOM_VARIABLES', '', 'Inject custom variables into the job that are made available to the cartridge whilst loading so that they can be utilised to configure jobs, e.g. providing the repository to clone, or a URL to access')
     }
     environmentVariables {
         groovy("return [SCM_KEY: org.apache.commons.lang.RandomStringUtils.randomAlphanumeric(20)]")
@@ -409,6 +410,26 @@ def cartridgeFolder = folder(cartridgeFolderName) {
                 }
             }
         }
+        groovy {
+            scriptSource {
+                stringScriptSource {
+                    command('''
+                        import cartridge.variables.CustomVariableHandler;
+
+                        println "[INFO] - Attempting to validate custom cartridge variables."
+
+                        CustomVariableHandler customVariableHandler = new CustomVariableHandler();
+                        customVariableHandler.validate("${CARTRIDGE_CUSTOM_VARIABLES}");
+                    '''.stripMargin())
+                }
+            }
+            parameters("")
+            scriptParameters("")
+            properties("")
+            javaOpts("")
+            groovyName("ADOP Groovy")
+            classPath('''${WORKSPACE}/job_dsl_additional_classpath''')
+       }
        environmentVariables {
          env('PLUGGABLE_SCM_PROVIDER_PATH','${JENKINS_HOME}/userContent/job_dsl_additional_classpath/')
          env('PLUGGABLE_SCM_PROVIDER_PROPERTIES_PATH','${JENKINS_HOME}/userContent/datastore/pluggable/scm')
